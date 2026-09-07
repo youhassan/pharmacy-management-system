@@ -17,11 +17,18 @@ public class PurchaseDAO {
 
         try (
                 Connection con = DBConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
+                PreparedStatement ps = con.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
         ){
             ps.setInt(1, purchase.getCompID());
             ps.setDate(2, java.sql.Date.valueOf(purchase.getPurDate()));
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            if (rs.next())
+            {
+                purchase.setPurID(rs.getInt(1));
+            }
         }
     }
 
