@@ -141,4 +141,33 @@ public class PurchaseItemDAO {
             return purchaseItems;
         }
     }
+
+
+    public List<PurchaseItem> getPurchaseItemsByMedicine(int medicineID) throws SQLException
+    {
+        List<PurchaseItem> purchaseItems = new ArrayList<>();
+
+        String sql = "SELECT * FROM PurchaseItem WHERE medicineID = ?";
+
+        try(
+                Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+        ){
+            ps.setInt(1, medicineID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                PurchaseItem purchaseItem = new PurchaseItem(
+                        rs.getInt("purItemID"),
+                        rs.getInt("purID"),
+                        rs.getInt("medicineID"),
+                        rs.getInt("quantityPur"),
+                        rs.getDouble("unitCost")
+                );
+                purchaseItems.add(purchaseItem);
+            }
+            return purchaseItems;
+        }
+    }
 }

@@ -144,7 +144,7 @@ public class MedicineDAO {
     }
 
 
-    public void updateMedicine(Medicine medicine) throws SQLException
+    public void updateMedicine(String oldMedicineName, Medicine medicine) throws SQLException
     {
         String sql = "UPDATE Medicine SET medName = ?, quantity = ?, expiryDate = ?, minimumStock = ?, compID = ? WHERE medicineID = ?";
 
