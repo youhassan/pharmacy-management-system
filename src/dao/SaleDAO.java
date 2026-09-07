@@ -11,17 +11,28 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 
 public class SaleDAO {
+
     public void addSale(Sale sale) throws SQLException
     {
         String sql = "INSERT INTO Sale (saleDate, username) VALUES (?, ?)";
 
         try(
                 Connection con = DBConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement(sql);
+                PreparedStatement ps = con.prepareStatement(
+                        sql,
+                        java.sql.Statement.RETURN_GENERATED_KEYS
+                );
         ){
             ps.setDate(1, java.sql.Date.valueOf(sale.getSaleDate()));
             ps.setString(2, sale.getUsername());
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            if (rs.next())
+            {
+                sale.setSaleID(rs.getInt(1));
+            }
         }
     }
 
