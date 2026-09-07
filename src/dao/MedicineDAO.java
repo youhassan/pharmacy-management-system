@@ -114,6 +114,36 @@ public class MedicineDAO {
     }
 
 
+    public List<Medicine> getMedicineByCompany(int compID) throws SQLException
+    {
+        List<Medicine> medicines = new ArrayList<>();
+
+        String sql = "SELECT * FROM Medicine WHERE compID = ?";
+
+        try (
+                Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+        ){
+            ps.setInt(1, compID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                Medicine medicine = new Medicine(
+                        rs.getInt("medicineID"),
+                        rs.getString("medName"),
+                        rs.getInt("quantity"),
+                        rs.getDate("expiryDate").toLocalDate(),
+                        rs.getInt("minimumStock"),
+                        rs.getInt("compID")
+                );
+                medicines.add(medicine);
+            }
+            return medicines;
+        }
+    }
+
+
     public void updateMedicine(Medicine medicine) throws SQLException
     {
         String sql = "UPDATE Medicine SET medName = ?, quantity = ?, expiryDate = ?, minimumStock = ?, compID = ? WHERE medicineID = ?";

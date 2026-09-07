@@ -98,16 +98,16 @@ public class CompanyDAO {
     }
 
 
-    public void updateCompany(Company company) throws SQLException
+    public void updateCompany(String oldCompanyName, Company company) throws SQLException
     {
-        String sql = "UPDATE Company SET compName = ? WHERE compID = ?";
+        String sql = "UPDATE Company SET compName = ? WHERE compName = ?";
 
         try (
                 Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql);
         ){
             ps.setString(1, company.getCompName());
-            ps.setInt(2, company.getCompID());
+            ps.setString(2, oldCompanyName);
             ps.executeUpdate();
         }
     }
