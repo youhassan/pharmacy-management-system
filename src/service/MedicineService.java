@@ -158,7 +158,6 @@ public class MedicineService {
         }
         medicine.setMedicineID(existMedicine.getMedicineID());
         medicineDAO.updateMedicine(oldMedicineName, medicine);
-        medicineDAO.updateMedicine(oldMedicineName, medicine);
     }
 
 
