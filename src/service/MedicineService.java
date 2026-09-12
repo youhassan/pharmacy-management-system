@@ -21,6 +21,55 @@ public class MedicineService {
     }
 
 
+    public void addMedicine(User currentUser, Medicine medicine, String companyName) throws SQLException
+    {
+        if (currentUser == null || currentUser.getRole() != Role.ADMIN)
+        {
+            throw new IllegalArgumentException("Only Admins can add medicines");
+        }
+        if (medicine == null)
+        {
+            throw new IllegalArgumentException("Medicine can't be empty");
+        }
+        if (medicine.getMedName() == null || medicine.getMedName().isBlank())
+        {
+            throw new IllegalArgumentException("Medicine name can't be empty");
+        }
+        if (companyName == null || companyName.isBlank())
+        {
+            throw new IllegalArgumentException("Company name can't be empty");
+        }
+        if (medicineDAO.getMedicineByName(medicine.getMedName()) != null)
+        {
+            throw new IllegalArgumentException("Medicine already exists");
+        }
+        if (medicine.getQuantity() < 0)
+        {
+            throw new IllegalArgumentException("Medicine quantity should be greater than or equal to 0");
+        }
+        if (medicine.getMinimumStock() < 0)
+        {
+            throw new IllegalArgumentException("Medicine minimum stock should be greater than or equal to 0");
+        }
+        if (medicine.getExpiryDate() == null)
+        {
+            throw new IllegalArgumentException("Expiry date can't be empty");
+        }
+        if (medicine.getExpiryDate().isBefore(LocalDate.now()) || medicine.getExpiryDate().isEqual(LocalDate.now()))
+        {
+            throw new IllegalArgumentException("Medicine Expiration date should be after today");
+        }
+
+        Company company = companyDAO.getCompanyByName(companyName);
+        if (company == null)
+        {
+            throw new IllegalArgumentException("Company not found");
+        }
+
+        medicine.setCompID(company.getCompID());
+        medicineDAO.addMedicine(medicine);
+    }
+
     public void addMedicine(User currentUser, Medicine medicine) throws SQLException
     {
         if (currentUser == null || currentUser.getRole() != Role.ADMIN)
@@ -46,6 +95,10 @@ public class MedicineService {
         if (medicine.getMinimumStock() < 0)
         {
             throw new IllegalArgumentException("Medicine minimum stock should be greater than or equal to 0");
+        }
+        if (medicine.getExpiryDate() == null)
+        {
+            throw new IllegalArgumentException("Expiry date can't be empty");
         }
         if (medicine.getExpiryDate().isBefore(LocalDate.now()) || medicine.getExpiryDate().isEqual(LocalDate.now()))
         {
@@ -109,6 +162,79 @@ public class MedicineService {
         return medicineDAO.getMedicineByCompany(company.getCompID());
     }
 
+    public List<Medicine> getMedicinesByCompanyName(String companyName) throws SQLException
+    {
+        if (companyName == null || companyName.isBlank())
+        {
+            throw new IllegalArgumentException("Company name can't be empty");
+        }
+        Company company = companyDAO.getCompanyByName(companyName);
+        if (company == null)
+        {
+            throw new IllegalArgumentException("Company not found");
+        }
+        return medicineDAO.getMedicineByCompany(company.getCompID());
+    }
+
+
+    public void updateMedicine(User currentUser, String oldMedicineName, Medicine medicine, String companyName) throws SQLException
+    {
+        if (currentUser == null || currentUser.getRole() != Role.ADMIN)
+        {
+            throw new IllegalArgumentException("Only Admin can update medicines");
+        }
+        if (oldMedicineName == null || oldMedicineName.isBlank())
+        {
+            throw new IllegalArgumentException("Old medicine name can't be empty");
+        }
+        if (medicine == null)
+        {
+            throw new IllegalArgumentException("Medicine can't be empty");
+        }
+        if (medicine.getMedName() == null || medicine.getMedName().isBlank())
+        {
+            throw new IllegalArgumentException("Medicine name can't be empty");
+        }
+        if (companyName == null || companyName.isBlank())
+        {
+            throw new IllegalArgumentException("Company name can't be empty");
+        }
+
+        Medicine existMedicine = medicineDAO.getMedicineByName(oldMedicineName);
+        if (existMedicine == null)
+        {
+            throw new IllegalArgumentException("Medicine not found");
+        }
+        if (!oldMedicineName.equalsIgnoreCase(medicine.getMedName()) && medicineDAO.getMedicineByName(medicine.getMedName()) != null)
+        {
+            throw new IllegalArgumentException("Medicine already exists");
+        }
+        if (medicine.getQuantity() < 0)
+        {
+            throw new IllegalArgumentException("Medicine quantity should be greater than or equal to 0");
+        }
+        if (medicine.getMinimumStock() < 0)
+        {
+            throw new IllegalArgumentException("Medicine minimum stock should be greater than or equal to 0");
+        }
+        if (medicine.getExpiryDate() == null)
+        {
+            throw new IllegalArgumentException("Expiry date can't be empty");
+        }
+        if (medicine.getExpiryDate().isBefore(LocalDate.now()) || medicine.getExpiryDate().isEqual(LocalDate.now()))
+        {
+            throw new IllegalArgumentException("Medicine Expiration date should be after today");
+        }
+
+        Company company = companyDAO.getCompanyByName(companyName);
+        if (company == null)
+        {
+            throw new IllegalArgumentException("Company not found");
+        }
+        medicine.setMedicineID(existMedicine.getMedicineID());
+        medicine.setCompID(company.getCompID());
+        medicineDAO.updateMedicine(oldMedicineName, medicine);
+    }
 
     public void updateMedicine(User currentUser, String oldMedicineName, Medicine medicine) throws SQLException
     {
@@ -134,7 +260,7 @@ public class MedicineService {
         {
             throw new IllegalArgumentException("Medicine not found");
         }
-        if (!oldMedicineName.equals(medicine.getMedName()) && medicineDAO.getMedicineByName(medicine.getMedName()) != null)
+        if (!oldMedicineName.equalsIgnoreCase(medicine.getMedName()) && medicineDAO.getMedicineByName(medicine.getMedName()) != null)
         {
             throw new IllegalArgumentException("Medicine already exists");
         }
@@ -145,6 +271,10 @@ public class MedicineService {
         if (medicine.getMinimumStock() < 0)
         {
             throw new IllegalArgumentException("Medicine minimum stock should be greater than or equal to 0");
+        }
+        if (medicine.getExpiryDate() == null)
+        {
+            throw new IllegalArgumentException("Expiry date can't be empty");
         }
         if (medicine.getExpiryDate().isBefore(LocalDate.now()) || medicine.getExpiryDate().isEqual(LocalDate.now()))
         {

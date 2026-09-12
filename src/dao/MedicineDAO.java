@@ -59,7 +59,7 @@ public class MedicineDAO {
 
     public Medicine getMedicineByName(String medName) throws SQLException
     {
-        String sql = "SELECT * FROM Medicine WHERE medName = ?";
+        String sql = "SELECT * FROM Medicine WHERE LOWER(medName) = LOWER(?)";
 
         try (
                 Connection con = DBConnection.getConnection();

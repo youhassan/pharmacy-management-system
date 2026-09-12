@@ -125,6 +125,14 @@ public class UserService {
         {
             throw new IllegalArgumentException("User can't be empty");
         }
+        if (user.getUsername() == null || user.getUsername().isBlank())
+        {
+            throw new IllegalArgumentException("Username can't be empty");
+        }
+        if (currentUser.getUsername().equalsIgnoreCase(user.getUsername()))
+        {
+            throw new IllegalArgumentException("Admin cannot delete their own account");
+        }
 
         User existUser = userDAO.getUserByUsername(user.getUsername());
         if (existUser == null)

@@ -51,7 +51,7 @@ public class CompanyDAO {
 
     public Company getCompanyByName(String compName) throws SQLException
     {
-        String sql = "SELECT * FROM Company WHERE compName = ?";
+        String sql = "SELECT * FROM Company WHERE LOWER(compName) = LOWER(?)";
 
         try (
              Connection con = DBConnection.getConnection();
@@ -100,7 +100,7 @@ public class CompanyDAO {
 
     public void updateCompany(String oldCompanyName, Company company) throws SQLException
     {
-        String sql = "UPDATE Company SET compName = ? WHERE compName = ?";
+        String sql = "UPDATE Company SET compName = ? WHERE LOWER(compName) = LOWER(?)";
 
         try (
                 Connection con = DBConnection.getConnection();

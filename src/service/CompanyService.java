@@ -116,7 +116,7 @@ public class CompanyService {
         {
             throw new IllegalArgumentException("Company not found");
         }
-        if (!oldCompanyName.equals(company.getCompName()) && companyDAO.getCompanyByName(company.getCompName()) != null)
+        if (!oldCompanyName.equalsIgnoreCase(company.getCompName()) && companyDAO.getCompanyByName(company.getCompName()) != null)
         {
             throw new IllegalArgumentException("Company already exists");
         }
@@ -134,20 +134,24 @@ public class CompanyService {
         {
             throw new IllegalArgumentException("Company can't be empty");
         }
+        if (company.getCompName() == null || company.getCompName().isBlank())
+        {
+            throw new IllegalArgumentException("Company name can't be empty");
+        }
 
         Company existCompany = companyDAO.getCompanyByName(company.getCompName());
         if (existCompany == null)
         {
             throw new IllegalArgumentException("Company not found");
         }
-        if (!purchaseDAO.getPurchasesByCompany(company.getCompID()).isEmpty())
+        if (!purchaseDAO.getPurchasesByCompany(existCompany.getCompID()).isEmpty())
         {
             throw new IllegalArgumentException("Can't delete this company because it has purchase history");
         }
-        if (!medicineDAO.getMedicineByCompany(company.getCompID()).isEmpty())
+        if (!medicineDAO.getMedicineByCompany(existCompany.getCompID()).isEmpty())
         {
             throw new IllegalArgumentException("Can't delete this company because it has Existing Medicine");
         }
-        companyDAO.deleteCompany(company);
+        companyDAO.deleteCompany(existCompany);
     }
 }

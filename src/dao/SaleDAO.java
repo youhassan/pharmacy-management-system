@@ -170,4 +170,32 @@ public class SaleDAO {
             return sales;
         }
     }
+
+
+    public List<Sale> getSalesBetweenDates(LocalDate fromDate, LocalDate toDate) throws SQLException
+    {
+        List<Sale> sales = new ArrayList<>();
+
+        String sql = "SELECT * FROM Sale WHERE saleDate BETWEEN ? AND ? ORDER BY saleDate ASC";
+
+        try(
+                Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+        ){
+            ps.setDate(1, java.sql.Date.valueOf(fromDate));
+            ps.setDate(2, java.sql.Date.valueOf(toDate));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                Sale sale = new Sale(
+                        rs.getInt("saleID"),
+                        rs.getDate("saleDate").toLocalDate(),
+                        rs.getString("username")
+                );
+                sales.add(sale);
+            }
+            return sales;
+        }
+    }
 }

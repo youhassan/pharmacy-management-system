@@ -166,4 +166,32 @@ public class PurchaseDAO {
             return purchases;
         }
     }
+
+
+    public List<Purchase> getPurchasesBetweenDates(java.time.LocalDate fromDate, java.time.LocalDate toDate) throws SQLException
+    {
+        List<Purchase> purchases = new ArrayList<>();
+
+        String sql = "SELECT * FROM Purchase WHERE purDate BETWEEN ? AND ? ORDER BY purDate ASC";
+
+        try (
+                Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql);
+        ){
+            ps.setDate(1, java.sql.Date.valueOf(fromDate));
+            ps.setDate(2, java.sql.Date.valueOf(toDate));
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next())
+            {
+                Purchase purchase = new Purchase(
+                        rs.getInt("purID"),
+                        rs.getInt("compID"),
+                        rs.getDate("purDate").toLocalDate()
+                );
+                purchases.add(purchase);
+            }
+            return purchases;
+        }
+    }
 }
