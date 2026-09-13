@@ -122,7 +122,6 @@ public class SaleService {
         {
             item.setSaleID(sale.getSaleID());
             saleItemDAO.addSaleItem(item);
-
             Medicine medicine = medicineDAO.getMedicineByID(item.getMedicineID());
             medicine.setQuantity(medicine.getQuantity() - item.getQuantitySold());
             medicineDAO.updateMedicine(medicine.getMedName(), medicine);
@@ -317,14 +316,7 @@ public class SaleService {
                 totalSalesRevenue += (item.getQuantitySold() * item.getUnitPrice());
                 Medicine med = medicineDAO.getMedicineByID(item.getMedicineID());
                 String medName = med != null ? med.getMedName() : "ID: " + item.getMedicineID();
-                soldItems.add(new FinancialReport.SoldItemDetail(
-                        s.getSaleID(),
-                        s.getSaleDate(),
-                        s.getUsername(),
-                        medName,
-                        item.getQuantitySold(),
-                        item.getUnitPrice()
-                ));
+                soldItems.add(new FinancialReport.SoldItemDetail(s.getSaleID(), s.getSaleDate(), s.getUsername(), medName, item.getQuantitySold(), item.getUnitPrice()));
             }
         }
 
@@ -341,27 +333,11 @@ public class SaleService {
                 totalPurchaseCost += (item.getQuantityPur() * item.getUnitCost());
                 Medicine med = medicineDAO.getMedicineByID(item.getMedicineID());
                 String medName = med != null ? med.getMedName() : "ID: " + item.getMedicineID();
-                purchasedItems.add(new FinancialReport.PurchasedItemDetail(
-                        p.getPurID(),
-                        p.getPurDate(),
-                        compName,
-                        medName,
-                        item.getQuantityPur(),
-                        item.getUnitCost()
-                ));
+                purchasedItems.add(new FinancialReport.PurchasedItemDetail(p.getPurID(), p.getPurDate(), compName, medName, item.getQuantityPur(), item.getUnitCost()));
             }
         }
 
-        return new FinancialReport(
-                fromDate,
-                toDate,
-                sales.size(),
-                totalSalesRevenue,
-                purchases.size(),
-                totalPurchaseCost,
-                soldItems,
-                purchasedItems
-        );
+        return new FinancialReport(fromDate, toDate, sales.size(), totalSalesRevenue, purchases.size(), totalPurchaseCost, soldItems, purchasedItems);
     }
 
     public void updateSale(User currentUser, Sale sale) throws SQLException

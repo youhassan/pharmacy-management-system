@@ -198,12 +198,9 @@ public class PurchaseService {
         for (PurchaseItem item : purchaseItems)
         {
             item.setPurID(purchase.getPurID());
-
             purchaseItemDAO.addPurchaseItem(item);
-
             Medicine medicine = medicineDAO.getMedicineByID(item.getMedicineID());
             medicine.setQuantity(medicine.getQuantity() + item.getQuantityPur());
-
             medicineDAO.updateMedicine(medicine.getMedName(), medicine);
         }
     }
@@ -250,7 +247,6 @@ public class PurchaseService {
         {
             throw new IllegalArgumentException("Company ID can't be empty");
         }
-
         return purchaseDAO.getPurchasesByCompany(company.getCompID());
     }
 
@@ -270,7 +266,6 @@ public class PurchaseService {
         {
             throw new IllegalArgumentException("Company not found");
         }
-
         return purchaseDAO.getPurchasesByCompany(company.getCompID());
     }
 
@@ -284,7 +279,6 @@ public class PurchaseService {
         {
             throw new IllegalArgumentException("Date can't be empty");
         }
-
         return purchaseDAO.getPurchasesByDate(date);
     }
 
@@ -302,7 +296,6 @@ public class PurchaseService {
         {
             throw new IllegalArgumentException("From date cannot be after To date");
         }
-
         return purchaseDAO.getPurchasesBetweenDates(fromDate, toDate);
     }
 
@@ -367,7 +360,6 @@ public class PurchaseService {
         {
             throw new IllegalArgumentException("Company not found");
         }
-
         purchaseDAO.updatePurchase(purchase);
     }
 
